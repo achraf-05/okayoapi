@@ -1,11 +1,31 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const client = require('./okayodatabase');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
 
 const app = express();
 const port = 5000;
 
 app.use(bodyParser.json());
+
+const swaggerOptions = {
+  swaggerDefinition: {
+      openapi: '3.0.0', 
+      info: {
+          title: 'API de Facturation',
+          version: '1.0.0',
+          description: 'Documentation de l\'API pour la gestion des factures',
+      },
+  },
+  apis: ['./swaggerDef.js'],
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+
 
 app.get('/factures', async (req, res) => {
   try {
